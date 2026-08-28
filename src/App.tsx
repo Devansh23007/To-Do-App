@@ -1,4 +1,7 @@
 import { useState } from "react";
+import Header from "./components/Header";
+import AddTask from "./components/AddTask";
+import TaskList from "./components/TaskList";
 
 type Task = {
   text: string;
@@ -39,40 +42,19 @@ function App() {
 
   return (
     <div>
-      <h1>My To-Do App</h1>
+      <Header />
 
-      <input
-        type="text"
-        placeholder="Enter a task"
-        value={task}
-        onChange={(event) => setTask(event.target.value)}
-      />
+      <AddTask
+  task={task}
+  setTask={setTask}
+  addTask={addTask}
+/>
 
-      <button onClick={addTask}>Add</button>
-
-      <ul>
-        {tasks.map((task, index) => (
-          <li key={index}>
-  <input
-    type="checkbox"
-    checked={task.completed}
-    onChange={() => toggleTask(index)}
-  />
-
-  <span
-    style={{
-      textDecoration: task.completed ? "line-through" : "none",
-    }}
-  >
-    {task.text}
-  </span>
-
-  <button onClick={() => deleteTask(index)}>
-    Delete
-  </button>
-</li>
-        ))}
-      </ul>
+      <TaskList
+  tasks={tasks}
+  toggleTask={toggleTask}
+  deleteTask={deleteTask}
+/>
     </div>
   );
 }

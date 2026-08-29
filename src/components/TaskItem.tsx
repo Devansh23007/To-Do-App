@@ -3,11 +3,10 @@ import type { Category, Priority, Task } from "../types";
 
 type TaskItemProps = {
   task: Task;
-  index: number;
-  toggleTask: (index: number) => void;
-  deleteTask: (index: number) => void;
+  toggleTask: (createdAt: number) => void;
+  deleteTask: (createdAt: number) => void;
   editTask: (
-  index: number,
+  createdAt: number ,
   newText: string,
   newPriority: Priority,
   newCategory: Category,
@@ -17,7 +16,6 @@ type TaskItemProps = {
 
 function TaskItem({
   task,
-  index,
   toggleTask,
   deleteTask,
   editTask,
@@ -32,12 +30,12 @@ function TaskItem({
     const trimmedText = editText.trim();
 
     if (trimmedText === "") {
-      deleteTask(index);
+      deleteTask(task.createdAt);
       return;
     }
 
     editTask(
-  index,
+  task.createdAt,
   trimmedText,
   editPriority,
   editCategory,
@@ -117,7 +115,7 @@ function TaskItem({
       <input
         type="checkbox"
         checked={task.completed}
-        onChange={() => toggleTask(index)}
+        onChange={() => toggleTask(task.createdAt)}
       />
 
       <span className={task.completed ? "completed" : ""}>
@@ -142,7 +140,7 @@ function TaskItem({
         Edit
       </button>
 
-      <button onClick={() => deleteTask(index)}>
+      <button onClick={() => deleteTask(task.createdAt)}>
         Delete
       </button>
     </li>

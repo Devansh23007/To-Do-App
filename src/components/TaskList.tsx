@@ -4,10 +4,10 @@ import type { Category, Priority, Task } from "../types";
 
 type TaskListProps = {
   tasks: Task[];
-  toggleTask: (index: number) => void;
-  deleteTask: (index: number) => void;
+  toggleTask: (createdAt: number) => void;
+  deleteTask: (createdAt: number) => void;
   editTask: (
-  index: number,
+  createdAt: number,
   newText: string,
   newPriority: Priority,
   newCategory: Category,
@@ -30,16 +30,15 @@ function TaskList({
         </div>
       ) : (
         <ul className="task-list">
-          {tasks.map((task, index) => (
-            <TaskItem
-              key={index}
-              task={task}
-              index={index}
-              toggleTask={toggleTask}
-              deleteTask={deleteTask}
-              editTask={editTask}
-            />
-          ))}
+          {tasks.map((task) => (
+  <TaskItem
+    key={task.createdAt}
+    task={task}
+    toggleTask={toggleTask}
+    deleteTask={deleteTask}
+    editTask={editTask}
+  />
+))}
         </ul>
       )}
     </>

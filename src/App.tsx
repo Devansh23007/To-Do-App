@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "./components/Header";
 import AddTask from "./components/AddTask";
 import TaskList from "./components/TaskList";
 import "./App.css";
 import type { Category, Priority, Task } from "./types";
+import { loadTasks, saveTasks } from "./storage";
 
 type Filter = "all" | "active" | "completed";
 type PriorityFilter = "all" | Priority;
@@ -15,7 +16,25 @@ function App() {
   const [priority, setPriority] = useState<Priority>("medium");
   const [category, setCategory] = useState<Category>("other");
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [tasksLoaded, setTasksLoaded] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
+  useEffect(() => {
+  const loadSavedTasks = async () => {
+    const savedTasks = await loadTasks();
+
+    setTasks(savedTasks);
+    setTasksLoaded(true);
+  };
+
+  loadSavedTasks();
+}, []);
+useEffect(() => {
+  if (!tasksLoaded) {
+    return;
+  }
+
+  saveTasks(tasks);
+}, [tasks, tasksLoaded]);
   const [dueDate, setDueDate] = useState("");
   const [searchText, setSearchText] = useState("");
   const [filter, setFilter] = useState<Filter>("all");
@@ -42,15 +61,15 @@ const newTask: Task = {
   };
 
 const editTask = (
-  index: number,
+  createdAt: number,
   newText: string,
   newPriority: Priority,
   newCategory: Category,
   newDueDate: string | null
 ) => {
   setTasks((currentTasks) =>
-    currentTasks.map((task, taskIndex) =>
-      taskIndex === index
+    currentTasks.map((task) =>
+      task.createdAt === createdAt
         ? {
             ...task,
             text: newText,
@@ -63,18 +82,20 @@ const editTask = (
   );
 };
 
-  const toggleTask = (index: number) => {
-    setTasks(
-      tasks.map((task, taskIndex) =>
-        taskIndex === index
-          ? { ...task, completed: !task.completed }
-          : task
-      )
-    );
-  };
+const toggleTask = (createdAt: number) => {
+  setTasks((currentTasks) =>
+    currentTasks.map((task) =>
+      task.createdAt === createdAt
+        ? { ...task, completed: !task.completed }
+        : task
+    )
+  );
+};
 
-  const deleteTask = (index: number) => {
-  setTasks(tasks.filter((_, taskIndex) => taskIndex !== index));
+const deleteTask = (createdAt: number) => {
+  setTasks((currentTasks) =>
+    currentTasks.filter((task) => task.createdAt !== createdAt)
+  );
 };
 
 const filteredTasks = tasks

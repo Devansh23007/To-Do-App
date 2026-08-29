@@ -10,7 +10,8 @@ type TaskListProps = {
   index: number,
   newText: string,
   newPriority: Priority,
-  newCategory: Category
+  newCategory: Category,
+  newDueDate: string | null
 ) => void;
 };
 

@@ -8,6 +8,8 @@ type AddTaskProps = {
   category: Category;
   setCategory: (category: Category) => void;
   addTask: () => void;
+  dueDate: string;
+  setDueDate: (dueDate: string) => void;
 };
 
 function AddTask({
@@ -17,6 +19,8 @@ function AddTask({
   setPriority,
   category,
   setCategory,
+  dueDate,
+  setDueDate,
   addTask,
 }: AddTaskProps) {
   const handleKeyDown = (
@@ -60,6 +64,12 @@ function AddTask({
         <option value="project">Project</option>
         <option value="other">Other</option>
       </select>
+
+      <input
+        type="date"
+        value={dueDate}
+        onChange={(event) => setDueDate(event.target.value)}
+      />
 
       <button onClick={addTask}>Add</button>
     </div>

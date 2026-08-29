@@ -12,4 +12,5 @@ export type Task = {
   completed: boolean;
   priority: Priority;
   category: Category;
+  dueDate: string | null;
 };

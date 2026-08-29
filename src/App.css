@@ -308,3 +308,16 @@
   background: #333;
   color: #ccc;
 }
+
+.due-date {
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: #f0f0f0;
+  color: #555;
+}
+
+.dark .due-date {
+  background: #333;
+  color: #ccc;
+}

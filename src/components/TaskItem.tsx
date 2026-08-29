@@ -10,7 +10,8 @@ type TaskItemProps = {
   index: number,
   newText: string,
   newPriority: Priority,
-  newCategory: Category
+  newCategory: Category,
+  newDueDate: string | null
 ) => void;
 };
 
@@ -24,9 +25,8 @@ function TaskItem({
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(task.text);
   const [editPriority, setEditPriority] = useState<Priority>(task.priority);
-  const [editCategory, setEditCategory] = useState<Category>(
-    task.category
-  );
+  const [editCategory, setEditCategory] = useState<Category>(task.category);
+  const [editDueDate, setEditDueDate] = useState(task.dueDate ?? "");
 
   const handleSave = () => {
     const trimmedText = editText.trim();
@@ -40,7 +40,8 @@ function TaskItem({
   index,
   trimmedText,
   editPriority,
-  editCategory
+  editCategory,
+  editDueDate || null
 );
   };
 
@@ -48,6 +49,7 @@ function TaskItem({
     setEditText(task.text);
     setEditPriority(task.priority);
     setIsEditing(false);
+    setEditDueDate(task.dueDate ?? "");
   };
 
   const handleEditKeyDown = (
@@ -97,6 +99,12 @@ function TaskItem({
           <option value="other">Other</option>
         </select>
 
+        <input
+          type="date"
+          value={editDueDate}
+          onChange={(event) => setEditDueDate(event.target.value)}
+        />
+
         <button onClick={handleSave}>Save</button>
 
         <button onClick={handleCancel}>Cancel</button>
@@ -123,6 +131,12 @@ function TaskItem({
       <span className="category">
         {task.category}
       </span>
+
+      {task.dueDate && (
+      <span className="due-date">
+         Due: {task.dueDate}
+      </span>
+      )}
 
       <button onClick={() => setIsEditing(true)}>
         Edit

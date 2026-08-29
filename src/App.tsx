@@ -11,17 +11,19 @@ function App() {
   const [category, setCategory] = useState<Category>("other");
   const [tasks, setTasks] = useState<Task[]>([]);
   const [darkMode, setDarkMode] = useState(false);
+  const [dueDate, setDueDate] = useState("");
 
   const addTask = () => {
     if (task.trim() === "") {
       return;
     }
 
-  const newTask: Task = {
+const newTask: Task = {
   text: task.trim(),
   completed: false,
   priority,
   category,
+  dueDate: dueDate || null,
 };
 
     setTasks([...tasks, newTask]);
@@ -32,7 +34,8 @@ const editTask = (
   index: number,
   newText: string,
   newPriority: Priority,
-  newCategory: Category
+  newCategory: Category,
+  newDueDate: string | null
 ) => {
   setTasks((currentTasks) =>
     currentTasks.map((task, taskIndex) =>
@@ -42,6 +45,7 @@ const editTask = (
             text: newText,
             priority: newPriority,
             category: newCategory,
+            dueDate: newDueDate,
           }
         : task
     )
@@ -73,13 +77,15 @@ return (
 </button>
 
     <main className="main-content">
-   <AddTask
+  <AddTask
   task={task}
   setTask={setTask}
   priority={priority}
   setPriority={setPriority}
   category={category}
   setCategory={setCategory}
+  dueDate={dueDate}
+  setDueDate={setDueDate}
   addTask={addTask}
 />
 

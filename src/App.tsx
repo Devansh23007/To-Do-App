@@ -3,14 +3,11 @@ import Header from "./components/Header";
 import AddTask from "./components/AddTask";
 import TaskList from "./components/TaskList";
 import "./App.css";
-
-type Task = {
-  text: string;
-  completed: boolean;
-};
+import type { Task, Priority } from "./types";
 
 function App() {
   const [task, setTask] = useState("");
+  const [priority, setPriority] = useState<Priority>("medium");
   const [tasks, setTasks] = useState<Task[]>([]);
   const [darkMode, setDarkMode] = useState(false);
 
@@ -19,14 +16,33 @@ function App() {
       return;
     }
 
-    const newTask: Task = {
-      text: task,
-      completed: false,
-    };
+   const newTask: Task = {
+  text: task.trim(),
+  completed: false,
+  priority,
+};
 
     setTasks([...tasks, newTask]);
     setTask("");
   };
+
+const editTask = (
+  index: number,
+  newText: string,
+  newPriority: Priority
+) => {
+  setTasks((currentTasks) =>
+    currentTasks.map((task, taskIndex) =>
+      taskIndex === index
+        ? {
+            ...task,
+            text: newText,
+            priority: newPriority,
+          }
+        : task
+    )
+  );
+};
 
   const toggleTask = (index: number) => {
     setTasks(
@@ -54,16 +70,19 @@ return (
 
     <main className="main-content">
       <AddTask
-        task={task}
-        setTask={setTask}
-        addTask={addTask}
-      />
+  task={task}
+  setTask={setTask}
+  priority={priority}
+  setPriority={setPriority}
+  addTask={addTask}
+/>
 
       <TaskList
-        tasks={tasks}
-        toggleTask={toggleTask}
-        deleteTask={deleteTask}
-      />
+  tasks={tasks}
+  toggleTask={toggleTask}
+  deleteTask={deleteTask}
+  editTask={editTask}
+/>
     </main>
   </div>
 );

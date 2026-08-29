@@ -1,11 +1,23 @@
+import type { Priority } from "../types";
+
 type AddTaskProps = {
   task: string;
   setTask: (task: string) => void;
+  priority: Priority;
+  setPriority: (priority: Priority) => void;
   addTask: () => void;
 };
 
-function AddTask({ task, setTask, addTask }: AddTaskProps) {
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+function AddTask({
+  task,
+  setTask,
+  priority,
+  setPriority,
+  addTask,
+}: AddTaskProps) {
+  const handleKeyDown = (
+    event: React.KeyboardEvent<HTMLInputElement>
+  ) => {
     if (event.key === "Enter") {
       addTask();
     }
@@ -20,6 +32,17 @@ function AddTask({ task, setTask, addTask }: AddTaskProps) {
         onChange={(event) => setTask(event.target.value)}
         onKeyDown={handleKeyDown}
       />
+
+      <select
+        value={priority}
+        onChange={(event) =>
+          setPriority(event.target.value as Priority)
+        }
+      >
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+      </select>
 
       <button onClick={addTask}>Add</button>
     </div>

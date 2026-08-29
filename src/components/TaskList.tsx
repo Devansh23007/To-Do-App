@@ -1,20 +1,23 @@
 import TaskItem from "./TaskItem";
+import type { Priority, Task } from "../types";
 
-type Task = {
-  text: string;
-  completed: boolean;
-};
 
 type TaskListProps = {
   tasks: Task[];
   toggleTask: (index: number) => void;
   deleteTask: (index: number) => void;
+  editTask: (
+    index: number,
+    newText: string,
+    newPriority: Priority
+  ) => void;
 };
 
 function TaskList({
   tasks,
   toggleTask,
   deleteTask,
+  editTask,
 }: TaskListProps) {
   return (
     <>
@@ -32,6 +35,7 @@ function TaskList({
               index={index}
               toggleTask={toggleTask}
               deleteTask={deleteTask}
+              editTask={editTask}
             />
           ))}
         </ul>

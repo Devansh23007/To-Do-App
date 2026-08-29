@@ -6,6 +6,7 @@ import "./App.css";
 import type { Category, Priority, Task } from "./types";
 
 type Filter = "all" | "active" | "completed";
+type SortOption = "newest" | "oldest" | "priority" | "dueDate";
 
 function App() {
   const [task, setTask] = useState("");
@@ -16,6 +17,7 @@ function App() {
   const [dueDate, setDueDate] = useState("");
   const [searchText, setSearchText] = useState("");
   const [filter, setFilter] = useState<Filter>("all");
+  const [sortOption, setSortOption] = useState<SortOption>("newest");
 
   const addTask = () => {
     if (task.trim() === "") {
@@ -28,6 +30,7 @@ const newTask: Task = {
   priority,
   category,
   dueDate: dueDate || null,
+  createdAt: Date.now(),
 };
 
     setTasks([...tasks, newTask]);
@@ -70,18 +73,51 @@ const editTask = (
   setTasks(tasks.filter((_, taskIndex) => taskIndex !== index));
 };
 
-const filteredTasks = tasks.filter((task) => {
-  const matchesSearch = task.text
-    .toLowerCase()
-    .includes(searchText.toLowerCase());
+const filteredTasks = tasks
+  .filter((task) => {
+    const matchesSearch = task.text
+      .toLowerCase()
+      .includes(searchText.toLowerCase());
 
-  const matchesFilter =
-    filter === "all" ||
-    (filter === "active" && !task.completed) ||
-    (filter === "completed" && task.completed);
+    const matchesFilter =
+      filter === "all" ||
+      (filter === "active" && !task.completed) ||
+      (filter === "completed" && task.completed);
 
-  return matchesSearch && matchesFilter;
-});
+    return matchesSearch && matchesFilter;
+  })
+  .sort((a, b) => {
+    if (sortOption === "newest") {
+  return b.createdAt - a.createdAt;
+}
+
+if (sortOption === "oldest") {
+  return a.createdAt - b.createdAt;
+}
+
+    if (sortOption === "priority") {
+      const priorityValue = {
+        high: 1,
+        medium: 2,
+        low: 3,
+      };
+
+      return (
+        priorityValue[a.priority] -
+        priorityValue[b.priority]
+      );
+    }
+
+    if (sortOption === "dueDate") {
+      if (!a.dueDate && !b.dueDate) return 0;
+      if (!a.dueDate) return 1;
+      if (!b.dueDate) return -1;
+
+      return a.dueDate.localeCompare(b.dueDate);
+    }
+
+    return 0;
+  });
 
 return (
   <div className={`app ${darkMode ? "dark" : ""}`}>
@@ -122,6 +158,23 @@ return (
   >
     All
   </button>
+
+  <div className="sort-box">
+  <label htmlFor="sort">Sort by:</label>
+
+  <select
+    id="sort"
+    value={sortOption}
+    onChange={(event) =>
+      setSortOption(event.target.value as SortOption)
+    }
+  >
+    <option value="newest">Newest</option>
+    <option value="oldest">Oldest</option>
+    <option value="priority">Priority</option>
+    <option value="dueDate">Due date</option>
+  </select>
+</div>
 
   <button
     className={filter === "active" ? "active" : ""}

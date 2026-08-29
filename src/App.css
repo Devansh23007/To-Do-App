@@ -397,3 +397,24 @@
 .filter-buttons button {
   white-space: nowrap;
 }
+
+.sort-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.sort-box select {
+  padding: 7px 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+}
+
+.dark .sort-box select {
+  background: #252525;
+  color: white;
+  border-color: #444;
+}

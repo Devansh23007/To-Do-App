@@ -13,4 +13,5 @@ export type Task = {
   priority: Priority;
   category: Category;
   dueDate: string | null;
+  createdAt: number;
 };

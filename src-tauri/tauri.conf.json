@@ -13,8 +13,10 @@
     "windows": [
       {
         "title": "Everyday Task",
-        "width": 800,
+        "width": 420,
         "height": 600,
+        "minWidth": 350,
+        "minHeight": 450,
         "resizable": true,
         "fullscreen": false
       }

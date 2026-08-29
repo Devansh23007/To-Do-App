@@ -17,17 +17,26 @@ function TaskList({
   deleteTask,
 }: TaskListProps) {
   return (
-    <ul className="task-list">
-      {tasks.map((task, index) => (
-        <TaskItem
-          key={index}
-          task={task}
-          index={index}
-          toggleTask={toggleTask}
-          deleteTask={deleteTask}
-        />
-      ))}
-    </ul>
+    <>
+      {tasks.length === 0 ? (
+        <div className="empty-state">
+          <h2>No tasks yet</h2>
+          <p>Add something you need to get done.</p>
+        </div>
+      ) : (
+        <ul className="task-list">
+          {tasks.map((task, index) => (
+            <TaskItem
+              key={index}
+              task={task}
+              index={index}
+              toggleTask={toggleTask}
+              deleteTask={deleteTask}
+            />
+          ))}
+        </ul>
+      )}
+    </>
   );
 }
 

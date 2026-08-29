@@ -321,3 +321,79 @@
   background: #333;
   color: #ccc;
 }
+
+.search-box {
+  margin-bottom: 20px;
+}
+
+.search-box input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 14px;
+  outline: none;
+}
+
+.search-box input:focus {
+  border-color: #999;
+}
+
+.dark .search-box input {
+  background: #252525;
+  color: white;
+  border-color: #444;
+}
+
+.dark .search-box input::placeholder {
+  color: #888;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.filter-buttons button {
+  padding: 7px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+}
+
+.filter-buttons button:hover {
+  background: #f5f5f5;
+}
+
+.filter-buttons button.active {
+  background: #222;
+  color: white;
+  border-color: #222;
+}
+
+.dark .filter-buttons button {
+  background: #252525;
+  color: #ccc;
+  border-color: #444;
+}
+
+.dark .filter-buttons button:hover {
+  background: #333;
+}
+
+.dark .filter-buttons button.active {
+  background: white;
+  color: #222;
+  border-color: white;
+}
+
+.filter-buttons {
+  overflow-x: auto;
+}
+
+.filter-buttons button {
+  white-space: nowrap;
+}

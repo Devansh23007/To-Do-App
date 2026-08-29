@@ -19,3 +19,18 @@ export const loadTasks = async (): Promise<Task[]> => {
 
   return tasks ?? [];
 };  
+
+export const saveDarkMode = async (darkMode: boolean) => {
+  const store = await getStore();
+
+  await store.set("darkMode", darkMode);
+  await store.save();
+};
+
+export const loadDarkMode = async (): Promise<boolean> => {
+  const store = await getStore();
+
+  const darkMode = await store.get<boolean>("darkMode");
+
+  return darkMode ?? false;
+};

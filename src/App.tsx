@@ -4,7 +4,7 @@ import AddTask from "./components/AddTask";
 import TaskList from "./components/TaskList";
 import "./App.css";
 import type { Category, Priority, Task } from "./types";
-import { loadTasks, saveTasks } from "./storage";
+import { loadTasks, saveTasks, loadDarkMode, saveDarkMode } from "./storage";
 
 type Filter = "all" | "active" | "completed";
 type PriorityFilter = "all" | Priority;
@@ -18,15 +18,17 @@ function App() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [tasksLoaded, setTasksLoaded] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
-  useEffect(() => {
-  const loadSavedTasks = async () => {
+useEffect(() => {
+  const loadSavedData = async () => {
     const savedTasks = await loadTasks();
+    const savedDarkMode = await loadDarkMode();
 
     setTasks(savedTasks);
+    setDarkMode(savedDarkMode);
     setTasksLoaded(true);
   };
 
-  loadSavedTasks();
+  loadSavedData();
 }, []);
 useEffect(() => {
   if (!tasksLoaded) {
@@ -35,6 +37,13 @@ useEffect(() => {
 
   saveTasks(tasks);
 }, [tasks, tasksLoaded]);
+useEffect(() => {
+  if (!tasksLoaded) {
+    return;
+  }
+
+  saveDarkMode(darkMode);
+}, [darkMode, tasksLoaded]);
   const [dueDate, setDueDate] = useState("");
   const [searchText, setSearchText] = useState("");
   const [filter, setFilter] = useState<Filter>("all");

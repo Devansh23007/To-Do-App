@@ -6,6 +6,8 @@ import "./App.css";
 import type { Category, Priority, Task } from "./types";
 
 type Filter = "all" | "active" | "completed";
+type PriorityFilter = "all" | Priority;
+type CategoryFilter = "all" | Category;
 type SortOption = "newest" | "oldest" | "priority" | "dueDate";
 
 function App() {
@@ -18,6 +20,8 @@ function App() {
   const [searchText, setSearchText] = useState("");
   const [filter, setFilter] = useState<Filter>("all");
   const [sortOption, setSortOption] = useState<SortOption>("newest");
+  const [priorityFilter, setPriorityFilter] = useState<PriorityFilter>("all");
+  const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
 
   const addTask = () => {
     if (task.trim() === "") {
@@ -84,7 +88,20 @@ const filteredTasks = tasks
       (filter === "active" && !task.completed) ||
       (filter === "completed" && task.completed);
 
-    return matchesSearch && matchesFilter;
+    const matchesPriority =
+      priorityFilter === "all" ||
+      task.priority === priorityFilter;
+
+    const matchesCategory =
+      categoryFilter === "all" ||
+      task.category === categoryFilter;
+
+    return (
+      matchesSearch &&
+      matchesFilter &&
+      matchesPriority &&
+      matchesCategory
+    );
   })
   .sort((a, b) => {
     if (sortOption === "newest") {
@@ -118,6 +135,20 @@ if (sortOption === "oldest") {
 
     return 0;
   });
+
+const completedCount = tasks.filter(
+  (task) => task.completed
+).length;
+
+const activeCount = tasks.length - completedCount;
+
+const clearCompleted = () => {
+  setTasks((currentTasks) =>
+    currentTasks.filter((task) => !task.completed)
+  );
+};
+
+
 
 return (
   <div className={`app ${darkMode ? "dark" : ""}`}>
@@ -159,7 +190,80 @@ return (
     All
   </button>
 
-  <div className="sort-box">
+  <button
+    className={filter === "active" ? "active" : ""}
+    onClick={() => setFilter("active")}
+  >
+    Active
+  </button>
+
+  <button
+    className={filter === "completed" ? "active" : ""}
+    onClick={() => setFilter("completed")}
+  >
+    Completed
+  </button>
+</div>
+
+<div className="advanced-filters">
+  <div className="filter-select">
+    <label htmlFor="priority-filter">
+      Priority:
+    </label>
+
+    <select
+      id="priority-filter"
+      value={priorityFilter}
+      onChange={(event) =>
+        setPriorityFilter(
+          event.target.value as PriorityFilter
+        )
+      }
+    >
+      <option value="all">All</option>
+      <option value="high">High</option>
+      <option value="medium">Medium</option>
+      <option value="low">Low</option>
+    </select>
+  </div>
+
+  <div className="filter-select">
+    <label htmlFor="category-filter">
+      Category:
+    </label>
+
+    <select
+      id="category-filter"
+      value={categoryFilter}
+      onChange={(event) =>
+        setCategoryFilter(
+          event.target.value as CategoryFilter
+        )
+      }
+    >
+      <option value="all">All</option>
+      <option value="work">Work</option>
+      <option value="study">Study</option>
+      <option value="personal">Personal</option>
+      <option value="project">Project</option>
+      <option value="other">Other</option>
+    </select>
+  </div>
+</div>
+
+<div className="task-summary">
+  <span>Total: {tasks.length}</span>
+  <span>Active: {activeCount}</span>
+  <span>Completed: {completedCount}</span>
+
+  {completedCount > 0 && (
+    <button onClick={clearCompleted}>
+      Clear completed
+    </button>
+  )}
+</div>
+
+<div className="sort-box">
   <label htmlFor="sort">Sort by:</label>
 
   <select
@@ -174,21 +278,6 @@ return (
     <option value="priority">Priority</option>
     <option value="dueDate">Due date</option>
   </select>
-</div>
-
-  <button
-    className={filter === "active" ? "active" : ""}
-    onClick={() => setFilter("active")}
-  >
-    Active
-  </button>
-
-  <button
-    className={filter === "completed" ? "active" : ""}
-    onClick={() => setFilter("completed")}
-  >
-    Completed
-  </button>
 </div>
 
       <TaskList

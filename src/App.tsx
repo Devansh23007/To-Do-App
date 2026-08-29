@@ -3,11 +3,12 @@ import Header from "./components/Header";
 import AddTask from "./components/AddTask";
 import TaskList from "./components/TaskList";
 import "./App.css";
-import type { Task, Priority } from "./types";
+import type { Category, Priority, Task } from "./types";
 
 function App() {
   const [task, setTask] = useState("");
   const [priority, setPriority] = useState<Priority>("medium");
+  const [category, setCategory] = useState<Category>("other");
   const [tasks, setTasks] = useState<Task[]>([]);
   const [darkMode, setDarkMode] = useState(false);
 
@@ -16,10 +17,11 @@ function App() {
       return;
     }
 
-   const newTask: Task = {
+  const newTask: Task = {
   text: task.trim(),
   completed: false,
   priority,
+  category,
 };
 
     setTasks([...tasks, newTask]);
@@ -29,7 +31,8 @@ function App() {
 const editTask = (
   index: number,
   newText: string,
-  newPriority: Priority
+  newPriority: Priority,
+  newCategory: Category
 ) => {
   setTasks((currentTasks) =>
     currentTasks.map((task, taskIndex) =>
@@ -38,6 +41,7 @@ const editTask = (
             ...task,
             text: newText,
             priority: newPriority,
+            category: newCategory,
           }
         : task
     )
@@ -69,11 +73,13 @@ return (
 </button>
 
     <main className="main-content">
-      <AddTask
+   <AddTask
   task={task}
   setTask={setTask}
   priority={priority}
   setPriority={setPriority}
+  category={category}
+  setCategory={setCategory}
   addTask={addTask}
 />
 

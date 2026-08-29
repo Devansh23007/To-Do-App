@@ -1,10 +1,12 @@
-import type { Priority } from "../types";
+import type { Category, Priority } from "../types";
 
 type AddTaskProps = {
   task: string;
   setTask: (task: string) => void;
   priority: Priority;
   setPriority: (priority: Priority) => void;
+  category: Category;
+  setCategory: (category: Category) => void;
   addTask: () => void;
 };
 
@@ -13,6 +15,8 @@ function AddTask({
   setTask,
   priority,
   setPriority,
+  category,
+  setCategory,
   addTask,
 }: AddTaskProps) {
   const handleKeyDown = (
@@ -42,6 +46,19 @@ function AddTask({
         <option value="low">Low</option>
         <option value="medium">Medium</option>
         <option value="high">High</option>
+      </select>
+
+      <select
+        value={category}
+        onChange={(event) =>
+          setCategory(event.target.value as Category)
+        }
+      >
+        <option value="work">Work</option>
+        <option value="study">Study</option>
+        <option value="personal">Personal</option>
+        <option value="project">Project</option>
+        <option value="other">Other</option>
       </select>
 
       <button onClick={addTask}>Add</button>

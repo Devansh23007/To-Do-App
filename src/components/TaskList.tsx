@@ -1,5 +1,5 @@
 import TaskItem from "./TaskItem";
-import type { Priority, Task } from "../types";
+import type { Category, Priority, Task } from "../types";
 
 
 type TaskListProps = {
@@ -7,10 +7,11 @@ type TaskListProps = {
   toggleTask: (index: number) => void;
   deleteTask: (index: number) => void;
   editTask: (
-    index: number,
-    newText: string,
-    newPriority: Priority
-  ) => void;
+  index: number,
+  newText: string,
+  newPriority: Priority,
+  newCategory: Category
+) => void;
 };
 
 function TaskList({

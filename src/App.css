@@ -293,3 +293,18 @@
   color: white;
   border-color: #444;
 } 
+
+.category {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: #eee;
+  color: #555;
+}
+
+.dark .category {
+  background: #333;
+  color: #ccc;
+}

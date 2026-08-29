@@ -1,12 +1,17 @@
 import { useState } from "react";
-import type { Priority, Task } from "../types";
+import type { Category, Priority, Task } from "../types";
 
 type TaskItemProps = {
   task: Task;
   index: number;
   toggleTask: (index: number) => void;
   deleteTask: (index: number) => void;
-  editTask: (index: number, newText: string, newPriority: Priority) => void;
+  editTask: (
+  index: number,
+  newText: string,
+  newPriority: Priority,
+  newCategory: Category
+) => void;
 };
 
 function TaskItem({
@@ -19,6 +24,9 @@ function TaskItem({
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(task.text);
   const [editPriority, setEditPriority] = useState<Priority>(task.priority);
+  const [editCategory, setEditCategory] = useState<Category>(
+    task.category
+  );
 
   const handleSave = () => {
     const trimmedText = editText.trim();
@@ -28,8 +36,12 @@ function TaskItem({
       return;
     }
 
-    editTask(index, trimmedText, editPriority);
-    setIsEditing(false);
+    editTask(
+  index,
+  trimmedText,
+  editPriority,
+  editCategory
+);
   };
 
   const handleCancel = () => {
@@ -72,6 +84,19 @@ function TaskItem({
           <option value="high">High</option>
         </select>
 
+        <select
+          value={editCategory}
+          onChange={(event) =>
+            setEditCategory(event.target.value as Category)
+          }
+        >
+          <option value="work">Work</option>
+          <option value="study">Study</option>
+          <option value="personal">Personal</option>
+          <option value="project">Project</option>
+          <option value="other">Other</option>
+        </select>
+
         <button onClick={handleSave}>Save</button>
 
         <button onClick={handleCancel}>Cancel</button>
@@ -93,6 +118,10 @@ function TaskItem({
 
       <span className={`priority priority-${task.priority}`}>
         {task.priority}
+      </span>
+
+      <span className="category">
+        {task.category}
       </span>
 
       <button onClick={() => setIsEditing(true)}>

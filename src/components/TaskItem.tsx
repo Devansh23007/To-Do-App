@@ -111,40 +111,44 @@ function TaskItem({
   }
 
   return (
-    <li className="task-item">
+  <li className="task-item">
+    <div className="task-main">
       <input
         type="checkbox"
         checked={task.completed}
         onChange={() => toggleTask(task.createdAt)}
       />
 
-      <span className={task.completed ? "completed" : ""}>
-        {task.text}
-      </span>
+      <div className="task-info">
+        <span className={task.completed ? "completed" : ""}>
+          {task.text}
+        </span>
 
+        {task.dueDate && (
+          <span className="due-date">
+            Due: {task.dueDate}
+          </span>
+        )}
+      </div>
+    </div>
+
+    <div className="task-right">
       <span className={`priority priority-${task.priority}`}>
         {task.priority}
       </span>
 
-      <span className="category">
-        {task.category}
-      </span>
+      <div className="task-actions">
+        <button onClick={() => setIsEditing(true)}>
+          Edit
+        </button>
 
-      {task.dueDate && (
-      <span className="due-date">
-         Due: {task.dueDate}
-      </span>
-      )}
-
-      <button onClick={() => setIsEditing(true)}>
-        Edit
-      </button>
-
-      <button onClick={() => deleteTask(task.createdAt)}>
-        Delete
-      </button>
-    </li>
-  );
+        <button onClick={() => deleteTask(task.createdAt)}>
+          Delete
+        </button>
+      </div>
+    </div>
+  </li>
+);
 }
 
 export default TaskItem;

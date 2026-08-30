@@ -1,12 +1,10 @@
-import type { Category, Priority } from "../types";
+import type { Priority } from "../types";
 
 type AddTaskProps = {
   task: string;
   setTask: (task: string) => void;
   priority: Priority;
   setPriority: (priority: Priority) => void;
-  category: Category;
-  setCategory: (category: Category) => void;
   addTask: () => void;
   dueDate: string;
   setDueDate: (dueDate: string) => void;
@@ -17,8 +15,6 @@ function AddTask({
   setTask,
   priority,
   setPriority,
-  category,
-  setCategory,
   dueDate,
   setDueDate,
   addTask,
@@ -34,6 +30,7 @@ function AddTask({
   return (
     <div className="add-task">
       <input
+        className="task-input"
         type="text"
         placeholder="What needs to be done?"
         value={task}
@@ -42,6 +39,7 @@ function AddTask({
       />
 
       <select
+        className="priority-select"
         value={priority}
         onChange={(event) =>
           setPriority(event.target.value as Priority)
@@ -52,26 +50,16 @@ function AddTask({
         <option value="high">High</option>
       </select>
 
-      <select
-        value={category}
-        onChange={(event) =>
-          setCategory(event.target.value as Category)
-        }
-      >
-        <option value="work">Work</option>
-        <option value="study">Study</option>
-        <option value="personal">Personal</option>
-        <option value="project">Project</option>
-        <option value="other">Other</option>
-      </select>
-
       <input
+        className="date-input"
         type="date"
         value={dueDate}
         onChange={(event) => setDueDate(event.target.value)}
       />
 
-      <button onClick={addTask}>Add</button>
+      <button className="add-button" onClick={addTask}>
+        Enter
+      </button>
     </div>
   );
 }

@@ -190,6 +190,9 @@ return (
       />
 
       <main className="main-content">
+       {currentPage === "main" ? (
+        <>
+        <div className="page-header">
     <Header />
     <button
   className="theme-button"
@@ -197,13 +200,12 @@ return (
 >
   {darkMode ? "Light Mode" : "Dark Mode"}
 </button>
+</div>
   <AddTask
   task={task}
   setTask={setTask}
   priority={priority}
   setPriority={setPriority}
-  category={category}
-  setCategory={setCategory}
   dueDate={dueDate}
   setDueDate={setDueDate}
   addTask={addTask}
@@ -316,13 +318,20 @@ return (
   </select>
 </div>
 
-      <TaskList
-  tasks={filteredTasks}
-  toggleTask={toggleTask}
-  deleteTask={deleteTask}
-  editTask={editTask}
-/>
-    </main>
+<TaskList 
+  tasks={filteredTasks} 
+  toggleTask={toggleTask} 
+  deleteTask={deleteTask} 
+  editTask={editTask} 
+/> 
+    </>
+  ) : (
+    <div className="placeholder-page">
+      <h1>Other</h1>
+      <p>Your task modules will appear here.</p>
+    </div>
+  )}
+</main>
   </div>
 );
 }

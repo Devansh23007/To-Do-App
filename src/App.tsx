@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Header from "./components/Header";
 import AddTask from "./components/AddTask";
 import TaskList from "./components/TaskList";
+import Sidebar from "./components/Sidebar";
 import "./App.css";
 import type { Category, Priority, Task } from "./types";
 import { loadTasks, saveTasks, loadDarkMode, saveDarkMode } from "./storage";
@@ -18,6 +19,7 @@ function App() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [tasksLoaded, setTasksLoaded] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
+  const [currentPage, setCurrentPage] = useState<"main" | "other">("main");
 useEffect(() => {
   const loadSavedData = async () => {
     const savedTasks = await loadTasks();
@@ -181,7 +183,13 @@ const clearCompleted = () => {
 
 
 return (
-  <div className={`app ${darkMode ? "dark" : ""}`}>
+    <div className={`app ${darkMode ? "dark" : ""}`}>
+      <Sidebar
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+      />
+
+      <main className="main-content">
     <Header />
     <button
   className="theme-button"
@@ -189,8 +197,6 @@ return (
 >
   {darkMode ? "Light Mode" : "Dark Mode"}
 </button>
-
-    <main className="main-content">
   <AddTask
   task={task}
   setTask={setTask}

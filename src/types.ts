@@ -1,6 +1,7 @@
 export type Priority = "low" | "medium" | "high";
-
+ 
 export type Category =
+  | "general"
   | "work"
   | "study"
   | "personal"

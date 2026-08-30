@@ -174,9 +174,9 @@
 }
 
 @media (max-width: 500px) {
-  .app {
-    padding: 16px;
-  }
+  .main-content {
+  padding: 16px;
+}
 
   .add-task {
     flex-direction: column;
@@ -493,3 +493,111 @@
   color: white;
   border-color: #444;
 }
+
+.app {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 180px;
+  flex-shrink: 0;
+  padding: 20px 12px;
+  border-right: 1px solid #ddd;
+  box-sizing: border-box;
+}
+
+.sidebar-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  padding: 0 10px;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sidebar-button {
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.sidebar-button:hover {
+  background: #f2f2f2;
+}
+
+.sidebar-button.active {
+  background: #222;
+  color: white;
+}
+
+.main-content {
+  flex: 1;
+  min-width: 0;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.sidebar-toggle {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.sidebar-toggle:hover {
+  background: #f2f2f2;
+}
+
+.sidebar-icon {
+  width: 20px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.sidebar-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sidebar.collapsed {
+  width: 64px;
+}
+
+.sidebar.collapsed .sidebar-header {
+  justify-content: center;
+}
+
+.sidebar.collapsed .sidebar-button {
+  justify-content: center;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.dark .sidebar-toggle {
+  color: white;
+}
+
+.dark .sidebar-toggle:hover {
+  background: #333;
+} Just as growing

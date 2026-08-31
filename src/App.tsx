@@ -6,21 +6,19 @@ import Sidebar from "./components/Sidebar";
 import "./App.css";
 import type { Category, Priority, Task } from "./types";
 import { loadTasks, saveTasks, loadDarkMode, saveDarkMode } from "./storage";
+import ModulePage from "./components/ModulePage";
 
 type Filter = "all" | "active" | "completed";
 type PriorityFilter = "all" | Priority;
-type CategoryFilter = "all" | Category;
 type SortOption = "newest" | "oldest" | "priority" | "dueDate";
 
 function App() {
   const [task, setTask] = useState("");
   const [priority, setPriority] = useState<Priority>("medium");
-  const [category, setCategory] = useState<Category>("other");
   const [tasks, setTasks] = useState<Task[]>([]);
   const [tasksLoaded, setTasksLoaded] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
-  const [currentPage, setCurrentPage] = useState<"main" | "other">("main");
-useEffect(() => {
+  useEffect(() => {
   const loadSavedData = async () => {
     const savedTasks = await loadTasks();
     const savedDarkMode = await loadDarkMode();
@@ -51,25 +49,35 @@ useEffect(() => {
   const [filter, setFilter] = useState<Filter>("all");
   const [sortOption, setSortOption] = useState<SortOption>("newest");
   const [priorityFilter, setPriorityFilter] = useState<PriorityFilter>("all");
-  const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
+  const [currentPage, setCurrentPage] = useState<
+    "main" | "modules"
+    >("main");
 
-  const addTask = () => {
-    if (task.trim() === "") {
-      return;
-    }
+  const [activeModule, setActiveModule] = useState<Category | null>(null);
 
-const newTask: Task = {
-  text: task.trim(),
-  completed: false,
-  priority,
-  category,
-  dueDate: dueDate || null,
-  createdAt: Date.now(),
-};
+ const addTask = () => {
+  if (task.trim() === "") {
+    return;
+  }
 
-    setTasks([...tasks, newTask]);
-    setTask("");
+  const newTask: Task = {
+    text: task.trim(),
+    completed: false,
+    priority,
+    category: "general",
+    dueDate: dueDate || null,
+    createdAt: Date.now(),
   };
+
+  setTasks((currentTasks) => [
+    ...currentTasks,
+    newTask,
+  ]);
+
+  setTask("");
+  setDueDate("");
+  setPriority("medium");
+};
 
 const editTask = (
   createdAt: number,
@@ -124,15 +132,10 @@ const filteredTasks = tasks
       priorityFilter === "all" ||
       task.priority === priorityFilter;
 
-    const matchesCategory =
-      categoryFilter === "all" ||
-      task.category === categoryFilter;
-
     return (
       matchesSearch &&
       matchesFilter &&
-      matchesPriority &&
-      matchesCategory
+      matchesPriority
     );
   })
   .sort((a, b) => {
@@ -180,6 +183,74 @@ const clearCompleted = () => {
   );
 };
 
+const modules: {
+  category: Category;
+  name: string;
+  description: string;
+}[] = [
+  {
+    category: "work",
+    name: "Work",
+    description: "Tasks related to your work.",
+  },
+  {
+    category: "study",
+    name: "Study",
+    description: "Tasks related to learning and study.",
+  },
+  {
+    category: "personal",
+    name: "Personal",
+    description: "Personal tasks and activities.",
+  },
+  {
+    category: "project",
+    name: "Project",
+    description: "Tasks related to your projects.",
+  },
+  {
+    category: "other",
+    name: "Other",
+    description: "Everything else.",
+  },
+];
+
+const addModuleTask = () => {
+  if (!activeModule || task.trim() === "") {
+    return;
+  }
+
+  const newTask: Task = {
+    text: task.trim(),
+    completed: false,
+    priority,
+    category: activeModule,
+    dueDate: dueDate || null,
+    createdAt: Date.now(),
+  };
+
+  setTasks((currentTasks) => [
+    ...currentTasks,
+    newTask,
+  ]);
+
+  setTask("");
+  setDueDate("");
+};
+
+const openModule = (category: Category) => {
+  setActiveModule(category);
+  setCurrentPage("modules");
+
+  setTask("");
+  setDueDate("");
+  setPriority("medium");
+};
+
+const closeModule = () => {
+  setActiveModule(null);
+  setCurrentPage("modules");
+};
 
 
 return (
@@ -206,6 +277,7 @@ return (
   setTask={setTask}
   priority={priority}
   setPriority={setPriority}
+  category="general"
   dueDate={dueDate}
   setDueDate={setDueDate}
   addTask={addTask}
@@ -264,29 +336,6 @@ return (
       <option value="low">Low</option>
     </select>
   </div>
-
-  <div className="filter-select">
-    <label htmlFor="category-filter">
-      Category:
-    </label>
-
-    <select
-      id="category-filter"
-      value={categoryFilter}
-      onChange={(event) =>
-        setCategoryFilter(
-          event.target.value as CategoryFilter
-        )
-      }
-    >
-      <option value="all">All</option>
-      <option value="work">Work</option>
-      <option value="study">Study</option>
-      <option value="personal">Personal</option>
-      <option value="project">Project</option>
-      <option value="other">Other</option>
-    </select>
-  </div>
 </div>
 
 <div className="task-summary">
@@ -325,12 +374,76 @@ return (
   editTask={editTask} 
 /> 
     </>
-  ) : (
-    <div className="placeholder-page">
-      <h1>Other</h1>
-      <p>Your task modules will appear here.</p>
+    ) : activeModule ? (
+  <ModulePage
+    category={activeModule}
+    tasks={tasks.filter(
+      (task) => task.category === activeModule
+    )}
+    task={task}
+    setTask={setTask}
+    priority={priority}
+    setPriority={setPriority}
+    dueDate={dueDate}
+    setDueDate={setDueDate}
+    addTask={addModuleTask}
+    toggleTask={toggleTask}
+    deleteTask={deleteTask}
+    editTask={editTask}
+    onBack={closeModule}
+  />
+) : (
+  <div className="module-page">
+    <div className="page-header">
+      <div>
+        <h1>Modules</h1>
+        <p>Organize your tasks by area.</p>
+      </div>
     </div>
-  )}
+
+    <div className="module-grid">
+      <button
+        className="module-card"
+        onClick={() => openModule("work")}
+      >
+        <h2>Work</h2>
+        <p>Work related tasks</p>
+      </button>
+
+      <button
+        className="module-card"
+        onClick={() => openModule("study")}
+      >
+        <h2>Study</h2>
+        <p>Study and learning tasks</p>
+      </button>
+
+      <button
+        className="module-card"
+        onClick={() => openModule("personal")}
+      >
+        <h2>Personal</h2>
+        <p>Personal tasks</p>
+      </button>
+
+      <button
+        className="module-card"
+        onClick={() => openModule("project")}
+      >
+        <h2>Project</h2>
+        <p>Project related tasks</p>
+      </button>
+
+      <button
+        className="module-card"
+        onClick={() => openModule("other")}
+      >
+        <h2>Other</h2>
+        <p>Everything else</p>
+      </button>
+    </div>
+  </div>
+)}
 </main>
   </div>
 );

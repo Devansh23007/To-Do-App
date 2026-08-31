@@ -1,11 +1,16 @@
-import type { Priority } from "../types";
+import type { Category, Priority } from "../types";
 
 type AddTaskProps = {
   task: string;
   setTask: (task: string) => void;
+
   priority: Priority;
   setPriority: (priority: Priority) => void;
+
+  category: Category;
+
   addTask: () => void;
+
   dueDate: string;
   setDueDate: (dueDate: string) => void;
 };
@@ -15,6 +20,7 @@ function AddTask({
   setTask,
   priority,
   setPriority,
+  category,
   dueDate,
   setDueDate,
   addTask,
@@ -30,7 +36,6 @@ function AddTask({
   return (
     <div className="add-task">
       <input
-        className="task-input"
         type="text"
         placeholder="What needs to be done?"
         value={task}
@@ -39,7 +44,6 @@ function AddTask({
       />
 
       <select
-        className="priority-select"
         value={priority}
         onChange={(event) =>
           setPriority(event.target.value as Priority)
@@ -51,14 +55,13 @@ function AddTask({
       </select>
 
       <input
-        className="date-input"
         type="date"
         value={dueDate}
         onChange={(event) => setDueDate(event.target.value)}
       />
 
-      <button className="add-button" onClick={addTask}>
-        Enter
+      <button onClick={addTask}>
+        Add
       </button>
     </div>
   );

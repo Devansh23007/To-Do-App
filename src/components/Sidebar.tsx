@@ -1,8 +1,8 @@
 import { useState } from "react";
 
 type SidebarProps = {
-  currentPage: "main" | "other";
-  setCurrentPage: (page: "main" | "other") => void;
+  currentPage: "main" | "modules";
+  setCurrentPage: (page: "main" | "modules") => void;
 };
 
 function Sidebar({ currentPage, setCurrentPage }: SidebarProps) {
@@ -37,14 +37,14 @@ function Sidebar({ currentPage, setCurrentPage }: SidebarProps) {
 
         <button
           className={
-            currentPage === "other"
+            currentPage === "modules"
               ? "sidebar-button active"
               : "sidebar-button"
           }
-          onClick={() => setCurrentPage("other")}
+          onClick={() => setCurrentPage("modules")}
         >
           <span className="sidebar-icon">▣</span>
-          {!isCollapsed && <span>Other</span>}
+          {!isCollapsed && <span>Modules</span>}
         </button>
       </nav>
     </aside>

@@ -1732,3 +1732,21 @@
     gap: 8px;
   }
 }
+
+.task-view-buttons {
+  display: flex;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.task-view-buttons button {
+  padding: 8px 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.task-view-buttons button.active {
+  font-weight: 600;
+}

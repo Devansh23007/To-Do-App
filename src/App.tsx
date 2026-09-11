@@ -6,11 +6,14 @@ import Sidebar from "./components/Sidebar";
 import "./App.css";
 import type { Category, Priority, Task } from "./types";
 import { loadTasks, saveTasks, loadDarkMode, saveDarkMode } from "./storage";
+import { isToday, isUpcoming, isOverdue } from "./utils/dateUtils";
 import ModulePage from "./components/ModulePage";
 
 type Filter = "all" | "active" | "completed";
 type PriorityFilter = "all" | Priority;
 type SortOption = "newest" | "oldest" | "priority" | "dueDate";
+
+type TaskView = "all" | "today" | "upcoming" | "overdue";
 
 function App() {
   const [task, setTask] = useState("");
@@ -49,9 +52,11 @@ useEffect(() => {
   const [filter, setFilter] = useState<Filter>("all");
   const [sortOption, setSortOption] = useState<SortOption>("newest");
   const [priorityFilter, setPriorityFilter] = useState<PriorityFilter>("all");
-  const [currentPage, setCurrentPage] = useState<
-    "main" | "modules"
-    >("main");
+const [currentPage, setCurrentPage] = useState<
+  "main" | "modules" | "taskView"
+>("main");
+
+const [taskView, setTaskView] = useState<TaskView>("all");
 
   const [activeModule, setActiveModule] = useState<Category | null>(null);
 
@@ -117,7 +122,23 @@ const deleteTask = (createdAt: number) => {
   );
 };
 
-const filteredTasks = tasks
+const viewTasks = tasks.filter((task) => {
+  if (taskView === "today") {
+    return isToday(task.dueDate);
+  }
+
+  if (taskView === "upcoming") {
+    return isUpcoming(task.dueDate, task.completed);
+  }
+
+  if (taskView === "overdue") {
+    return isOverdue(task.dueDate, task.completed);
+  }
+
+  return true;
+});
+
+const filteredTasks = viewTasks
   .filter((task) => {
     const matchesSearch = task.text
       .toLowerCase()
@@ -290,6 +311,36 @@ return (
     value={searchText}
     onChange={(event) => setSearchText(event.target.value)}
   />
+</div>
+
+<div className="task-view-buttons">
+  <button
+    className={taskView === "all" ? "active" : ""}
+    onClick={() => setTaskView("all")}
+  >
+    All
+  </button>
+
+  <button
+    className={taskView === "today" ? "active" : ""}
+    onClick={() => setTaskView("today")}
+  >
+    Today
+  </button>
+
+  <button
+    className={taskView === "upcoming" ? "active" : ""}
+    onClick={() => setTaskView("upcoming")}
+  >
+    Upcoming
+  </button>
+
+  <button
+  className={taskView === "overdue" ? "active" : ""}
+  onClick={() => setTaskView("overdue")}
+>
+  Overdue
+</button>
 </div>
 
 <div className="filter-buttons">

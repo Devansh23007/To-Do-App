@@ -6,31 +6,51 @@ const getStore = async () => {
 };
 
 export const saveTasks = async (tasks: Task[]) => {
-  const store = await getStore();
+  try {
+    const store = await getStore();
 
-  await store.set("tasks", tasks);
-  await store.save();
+    await store.set("tasks", tasks);
+    await store.save();
+  } catch (error) {
+    console.error("Failed to save tasks:", error);
+  }
 };
 
 export const loadTasks = async (): Promise<Task[]> => {
-  const store = await getStore();
+  try {
+    const store = await getStore();
 
-  const tasks = await store.get<Task[]>("tasks");
+    const tasks = await store.get<Task[]>("tasks");
 
-  return tasks ?? [];
-};  
+    return tasks ?? [];
+  } catch (error) {
+    console.error("Failed to load tasks:", error);
+
+    return [];
+  }
+};
 
 export const saveDarkMode = async (darkMode: boolean) => {
-  const store = await getStore();
+  try {
+    const store = await getStore();
 
-  await store.set("darkMode", darkMode);
-  await store.save();
+    await store.set("darkMode", darkMode);
+    await store.save();
+  } catch (error) {
+    console.error("Failed to save theme:", error);
+  }
 };
 
 export const loadDarkMode = async (): Promise<boolean> => {
-  const store = await getStore();
+  try {
+    const store = await getStore();
 
-  const darkMode = await store.get<boolean>("darkMode");
+    const darkMode = await store.get<boolean>("darkMode");
 
-  return darkMode ?? false;
+    return darkMode ?? false;
+  } catch (error) {
+    console.error("Failed to load theme:", error);
+
+    return false;
+  }
 };

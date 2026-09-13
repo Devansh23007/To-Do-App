@@ -18,6 +18,11 @@ import {
   getNextDueDate,
 } from "./utils/dateUtils";
 import ModulePage from "./components/ModulePage";
+import {
+  isPermissionGranted,
+  requestPermission,
+  sendNotification,
+} from "@tauri-apps/plugin-notification";
 
 type Filter = "all" | "active" | "completed";
 type PriorityFilter = "all" | Priority;
@@ -30,6 +35,10 @@ function App() {
   const [priority, setPriority] = useState<Priority>("medium");
   const [recurrence, setRecurrence] =
   useState<Recurrence>("none");
+  const [reminder, setReminder] = useState<string>("");
+  const [notifiedReminders, setNotifiedReminders] = useState<Set<string>>(
+  new Set()
+);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [tasksLoaded, setTasksLoaded] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
@@ -70,9 +79,67 @@ const [currentPage, setCurrentPage] = useState<
 
 const [taskView, setTaskView] = useState<TaskView>("all");
 
-  const [activeModule, setActiveModule] = useState<Category | null>(null);
+const [activeModule, setActiveModule] = useState<Category | null>(null);
 
- const addTask = () => {
+const requestNotificationPermission = async () => {
+  let permissionGranted = await isPermissionGranted();
+
+  if (!permissionGranted) {
+    const permission = await requestPermission();
+    permissionGranted = permission === "granted";
+  }
+
+  return permissionGranted;
+};  
+
+useEffect(() => {
+  const checkReminders = async () => {
+    const now = new Date();
+
+    const currentTime = `${String(now.getHours()).padStart(2, "0")}:${String(
+      now.getMinutes()
+    ).padStart(2, "0")}`;
+
+    for (const task of tasks) {
+      if (
+        task.completed ||
+        !task.reminder ||
+        task.reminder !== currentTime
+      ) {
+        continue;
+      }
+
+      const reminderId = `${task.createdAt}-${task.reminder}`;
+
+      if (notifiedReminders.has(reminderId)) {
+        continue;
+      }
+
+      const permissionGranted = await requestNotificationPermission();
+
+      if (!permissionGranted) continue;
+
+      sendNotification({
+        title: "Task Reminder",
+        body: task.text,
+      });
+
+      setNotifiedReminders((current) => {
+        const updated = new Set(current);
+        updated.add(reminderId);
+        return updated;
+      });
+    }
+  };
+
+  checkReminders();
+
+  const interval = setInterval(checkReminders, 60 * 1000);
+
+  return () => clearInterval(interval);
+}, [tasks, notifiedReminders]);
+
+const addTask = () => {
   if (task.trim() === "") {
     return;
   }
@@ -84,6 +151,7 @@ const newTask: Task = {
   category: "general",
   dueDate: dueDate || null,
   recurrence,
+  reminder: reminder || null,
   createdAt: Date.now(),
 };
 
@@ -96,6 +164,7 @@ const newTask: Task = {
   setDueDate("");
   setPriority("medium");
   setRecurrence("none");  
+  setReminder("");
 };
 
 const editTask = (
@@ -331,7 +400,8 @@ const newTask: Task = {
   priority,
   category: activeModule,
   dueDate: dueDate || null,
-  recurrence: "none",
+  recurrence,
+  reminder: reminder || null,
   createdAt: Date.now(),
 };
 
@@ -387,6 +457,8 @@ return (
   category="general"
   recurrence={recurrence}
   setRecurrence={setRecurrence}
+  reminder={reminder}
+  setReminder={setReminder}
   dueDate={dueDate}
   setDueDate={setDueDate}
   addTask={addTask}
@@ -525,6 +597,8 @@ return (
     setPriority={setPriority}
     recurrence={recurrence}
     setRecurrence={setRecurrence}
+    reminder={reminder}
+    setReminder={setReminder}
     dueDate={dueDate}
     setDueDate={setDueDate}
     addTask={addModuleTask}

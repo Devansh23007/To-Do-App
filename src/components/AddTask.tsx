@@ -4,6 +4,7 @@ import type {
   Recurrence,
 } from "../types";
 
+
 type AddTaskProps = {
   task: string;
   setTask: (task: string) => void;
@@ -20,6 +21,9 @@ type AddTaskProps = {
 
   dueDate: string;
   setDueDate: (dueDate: string) => void;
+
+  reminder: string;
+  setReminder: (value: string) => void;
 };
 
 function AddTask({
@@ -33,6 +37,8 @@ function AddTask({
   dueDate,
   setDueDate,
   addTask,
+  reminder,
+  setReminder,
 }: AddTaskProps) {
   const handleKeyDown = (
     event: React.KeyboardEvent<HTMLInputElement>
@@ -80,6 +86,12 @@ function AddTask({
   <option value="weekly">Weekly</option>
   <option value="monthly">Monthly</option>
 </select>
+
+<input
+  type="time"
+  value={reminder}
+  onChange={(event) => setReminder(event.target.value)}
+/>
 
       <button onClick={addTask}>
         Add

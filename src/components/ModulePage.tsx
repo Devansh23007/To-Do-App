@@ -20,6 +20,9 @@ type ModulePageProps = {
   recurrence: Recurrence;
   setRecurrence: (recurrence: Recurrence) => void;
 
+  reminder: string;
+  setReminder: (value: string) => void;
+
   dueDate: string;
   setDueDate: (dueDate: string) => void;
 
@@ -58,6 +61,8 @@ function ModulePage({
   setPriority,
   recurrence,
   setRecurrence,
+  reminder,
+  setReminder,
   dueDate,
   setDueDate,
   addTask,
@@ -87,6 +92,8 @@ function ModulePage({
   category={category}
   recurrence={recurrence}
   setRecurrence={setRecurrence}
+  reminder={reminder}
+  setReminder={setReminder}
   dueDate={dueDate}
   setDueDate={setDueDate}
   addTask={addTask}

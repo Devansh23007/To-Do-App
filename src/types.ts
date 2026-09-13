@@ -21,5 +21,6 @@ export type Task = {
   category: Category;
   dueDate: string | null;
   recurrence: Recurrence;
+  reminder: string | null;
   createdAt: number;
 };

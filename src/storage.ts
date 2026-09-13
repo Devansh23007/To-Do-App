@@ -22,11 +22,12 @@ export const loadTasks = async (): Promise<Task[]> => {
   const tasks = await store.get<Task[]>("tasks");
 
   return (
-    tasks?.map((task) => ({
-      ...task,
-      recurrence: task.recurrence ?? ("none" as Recurrence),
-    })) ?? []
-  );
+  tasks?.map((task) => ({
+    ...task,
+    recurrence: task.recurrence ?? ("none" as Recurrence),
+    reminder: task.reminder ?? null,
+  })) ?? []
+);
 };
 
 export const saveDarkMode = async (darkMode: boolean) => {

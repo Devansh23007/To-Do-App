@@ -1,5 +1,5 @@
 import { load } from "@tauri-apps/plugin-store";
-import type { Task } from "./types";
+import type { Recurrence, Task } from "./types";
 
 const getStore = async () => {
   return await load("tasks.json");
@@ -17,17 +17,16 @@ export const saveTasks = async (tasks: Task[]) => {
 };
 
 export const loadTasks = async (): Promise<Task[]> => {
-  try {
-    const store = await getStore();
+  const store = await getStore();
 
-    const tasks = await store.get<Task[]>("tasks");
+  const tasks = await store.get<Task[]>("tasks");
 
-    return tasks ?? [];
-  } catch (error) {
-    console.error("Failed to load tasks:", error);
-
-    return [];
-  }
+  return (
+    tasks?.map((task) => ({
+      ...task,
+      recurrence: task.recurrence ?? ("none" as Recurrence),
+    })) ?? []
+  );
 };
 
 export const saveDarkMode = async (darkMode: boolean) => {

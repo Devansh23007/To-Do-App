@@ -1,4 +1,8 @@
-import type { Category, Priority } from "../types";
+import type {
+  Category,
+  Priority,
+  Recurrence,
+} from "../types";
 
 type AddTaskProps = {
   task: string;
@@ -8,6 +12,9 @@ type AddTaskProps = {
   setPriority: (priority: Priority) => void;
 
   category: Category;
+
+  recurrence: Recurrence;
+  setRecurrence: (recurrence: Recurrence) => void;
 
   addTask: () => void;
 
@@ -21,6 +28,8 @@ function AddTask({
   priority,
   setPriority,
   category,
+  recurrence,
+  setRecurrence,
   dueDate,
   setDueDate,
   addTask,
@@ -59,6 +68,18 @@ function AddTask({
         value={dueDate}
         onChange={(event) => setDueDate(event.target.value)}
       />
+
+      <select
+  value={recurrence}
+  onChange={(event) =>
+    setRecurrence(event.target.value as Recurrence)
+  }
+>
+  <option value="none">No repeat</option>
+  <option value="daily">Daily</option>
+  <option value="weekly">Weekly</option>
+  <option value="monthly">Monthly</option>
+</select>
 
       <button onClick={addTask}>
         Add

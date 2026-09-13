@@ -1,17 +1,23 @@
 import TaskItem from "./TaskItem";
-import type { Category, Priority, Task } from "../types";
+import type {
+  Category,
+  Priority,
+  Recurrence,
+  Task,
+} from "../types";
 
 
 type TaskListProps = {
   tasks: Task[];
   toggleTask: (createdAt: number) => void;
   deleteTask: (createdAt: number) => void;
-  editTask: (
+editTask: (
   createdAt: number,
   newText: string,
   newPriority: Priority,
   newCategory: Category,
-  newDueDate: string | null
+  newDueDate: string | null,
+  newRecurrence: Recurrence
 ) => void;
 };
 

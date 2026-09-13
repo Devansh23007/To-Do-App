@@ -1750,3 +1750,37 @@
 .task-view-buttons button.active {
   font-weight: 600;
 }
+
+.edit-task-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.edit-task-form input,
+.edit-task-form select {
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.edit-task-form input[type="text"] {
+  flex: 1 1 200px;
+}
+
+.edit-task-form select,
+.edit-task-form input[type="date"] {
+  flex: 1 1 120px;
+}
+
+.edit-task-actions {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  justify-content: flex-end;
+}
+
+.edit-task-actions button {
+  flex-shrink: 0;
+}

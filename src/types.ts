@@ -1,5 +1,5 @@
 export type Priority = "low" | "medium" | "high";
- 
+
 export type Category =
   | "general"
   | "work"
@@ -8,11 +8,18 @@ export type Category =
   | "project"
   | "other";
 
+export type Recurrence =
+  | "none"
+  | "daily"
+  | "weekly"
+  | "monthly";
+
 export type Task = {
   text: string;
   completed: boolean;
   priority: Priority;
   category: Category;
   dueDate: string | null;
+  recurrence: Recurrence;
   createdAt: number;
 };

@@ -4,9 +4,19 @@ import AddTask from "./components/AddTask";
 import TaskList from "./components/TaskList";
 import Sidebar from "./components/Sidebar";
 import "./App.css";
-import type { Category, Priority, Task } from "./types";
+import type {
+  Category,
+  Priority,
+  Recurrence,
+  Task,
+} from "./types";
 import { loadTasks, saveTasks, loadDarkMode, saveDarkMode } from "./storage";
-import { isToday, isUpcoming, isOverdue } from "./utils/dateUtils";
+import {
+  isToday,
+  isUpcoming,
+  isOverdue,
+  getNextDueDate,
+} from "./utils/dateUtils";
 import ModulePage from "./components/ModulePage";
 
 type Filter = "all" | "active" | "completed";
@@ -18,6 +28,8 @@ type TaskView = "all" | "today" | "upcoming" | "overdue";
 function App() {
   const [task, setTask] = useState("");
   const [priority, setPriority] = useState<Priority>("medium");
+  const [recurrence, setRecurrence] =
+  useState<Recurrence>("none");
   const [tasks, setTasks] = useState<Task[]>([]);
   const [tasksLoaded, setTasksLoaded] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
@@ -65,14 +77,15 @@ const [taskView, setTaskView] = useState<TaskView>("all");
     return;
   }
 
-  const newTask: Task = {
-    text: task.trim(),
-    completed: false,
-    priority,
-    category: "general",
-    dueDate: dueDate || null,
-    createdAt: Date.now(),
-  };
+const newTask: Task = {
+  text: task.trim(),
+  completed: false,
+  priority,
+  category: "general",
+  dueDate: dueDate || null,
+  recurrence,
+  createdAt: Date.now(),
+};
 
   setTasks((currentTasks) => [
     ...currentTasks,
@@ -82,6 +95,7 @@ const [taskView, setTaskView] = useState<TaskView>("all");
   setTask("");
   setDueDate("");
   setPriority("medium");
+  setRecurrence("none");  
 };
 
 const editTask = (
@@ -89,7 +103,8 @@ const editTask = (
   newText: string,
   newPriority: Priority,
   newCategory: Category,
-  newDueDate: string | null
+  newDueDate: string | null,
+  newRecurrence: Recurrence
 ) => {
   setTasks((currentTasks) =>
     currentTasks.map((task) =>
@@ -100,6 +115,7 @@ const editTask = (
             priority: newPriority,
             category: newCategory,
             dueDate: newDueDate,
+            recurrence: newRecurrence,
           }
         : task
     )
@@ -107,13 +123,81 @@ const editTask = (
 };
 
 const toggleTask = (createdAt: number) => {
-  setTasks((currentTasks) =>
-    currentTasks.map((task) =>
+  setTasks((currentTasks) => {
+    const currentTask = currentTasks.find(
+      (task) => task.createdAt === createdAt
+    );
+
+    if (!currentTask) {
+      return currentTasks;
+    }
+
+    // If the task is already completed,
+    // simply uncomplete it.
+    if (currentTask.completed) {
+      return currentTasks.map((task) =>
+        task.createdAt === createdAt
+          ? { ...task, completed: false }
+          : task
+      );
+    }
+
+    // Normal task
+    if (currentTask.recurrence === "none") {
+      return currentTasks.map((task) =>
+        task.createdAt === createdAt
+          ? { ...task, completed: true }
+          : task
+      );
+    }
+
+    const nextDueDate = getNextDueDate(
+      currentTask.dueDate,
+      currentTask.recurrence
+    );
+
+    // If we cannot calculate a next date,
+    // just complete the current task.
+    if (!nextDueDate) {
+      return currentTasks.map((task) =>
+        task.createdAt === createdAt
+          ? { ...task, completed: true }
+          : task
+      );
+    }
+
+    // Check whether the next occurrence already exists.
+const nextOccurrenceExists = currentTasks.some(
+  (task) =>
+    task.text === currentTask.text &&
+    task.category === currentTask.category &&
+    task.recurrence === currentTask.recurrence &&
+    task.dueDate === nextDueDate
+);
+
+    // Complete the current occurrence.
+    const updatedTasks = currentTasks.map((task) =>
       task.createdAt === createdAt
-        ? { ...task, completed: !task.completed }
+        ? { ...task, completed: true }
         : task
-    )
-  );
+    );
+
+    // If the next occurrence already exists,
+    // don't create another one.
+    if (nextOccurrenceExists) {
+      return updatedTasks;
+    }
+
+    // Create the next occurrence.
+    const nextTask: Task = {
+      ...currentTask,
+      completed: false,
+      dueDate: nextDueDate,
+      createdAt: Date.now(),
+    };
+
+    return [...updatedTasks, nextTask];
+  });
 };
 
 const deleteTask = (createdAt: number) => {
@@ -241,14 +325,15 @@ const addModuleTask = () => {
     return;
   }
 
-  const newTask: Task = {
-    text: task.trim(),
-    completed: false,
-    priority,
-    category: activeModule,
-    dueDate: dueDate || null,
-    createdAt: Date.now(),
-  };
+const newTask: Task = {
+  text: task.trim(),
+  completed: false,
+  priority,
+  category: activeModule,
+  dueDate: dueDate || null,
+  recurrence: "none",
+  createdAt: Date.now(),
+};
 
   setTasks((currentTasks) => [
     ...currentTasks,
@@ -266,6 +351,7 @@ const openModule = (category: Category) => {
   setTask("");
   setDueDate("");
   setPriority("medium");
+  setRecurrence("none");
 };
 
 const closeModule = () => {
@@ -299,6 +385,8 @@ return (
   priority={priority}
   setPriority={setPriority}
   category="general"
+  recurrence={recurrence}
+  setRecurrence={setRecurrence}
   dueDate={dueDate}
   setDueDate={setDueDate}
   addTask={addTask}
@@ -435,6 +523,8 @@ return (
     setTask={setTask}
     priority={priority}
     setPriority={setPriority}
+    recurrence={recurrence}
+    setRecurrence={setRecurrence}
     dueDate={dueDate}
     setDueDate={setDueDate}
     addTask={addModuleTask}

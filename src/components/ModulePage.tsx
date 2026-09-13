@@ -1,6 +1,11 @@
 import AddTask from "./AddTask";
 import TaskList from "./TaskList";
-import type { Category, Priority, Task } from "../types";
+import type {
+  Category,
+  Priority,
+  Recurrence,
+  Task,
+} from "../types";
 
 type ModulePageProps = {
   category: Category;
@@ -12,6 +17,9 @@ type ModulePageProps = {
   priority: Priority;
   setPriority: (priority: Priority) => void;
 
+  recurrence: Recurrence;
+  setRecurrence: (recurrence: Recurrence) => void;
+
   dueDate: string;
   setDueDate: (dueDate: string) => void;
 
@@ -20,13 +28,14 @@ type ModulePageProps = {
   toggleTask: (createdAt: number) => void;
   deleteTask: (createdAt: number) => void;
 
-  editTask: (
-    createdAt: number,
-    newText: string,
-    newPriority: Priority,
-    newCategory: Category,
-    newDueDate: string | null
-  ) => void;
+editTask: (
+  createdAt: number,
+  newText: string,
+  newPriority: Priority,
+  newCategory: Category,
+  newDueDate: string | null,
+  newRecurrence: Recurrence
+) => void;
 
   onBack: () => void;
 };
@@ -47,6 +56,8 @@ function ModulePage({
   setTask,
   priority,
   setPriority,
+  recurrence,
+  setRecurrence,
   dueDate,
   setDueDate,
   addTask,
@@ -68,16 +79,18 @@ function ModulePage({
         <p>Tasks in your {moduleName.toLowerCase()} module.</p>
       </div>
 
-      <AddTask
-        task={task}
-        setTask={setTask}
-        priority={priority}
-        setPriority={setPriority}
-        category={category}
-        dueDate={dueDate}
-        setDueDate={setDueDate}
-        addTask={addTask}
-      />
+<AddTask
+  task={task}
+  setTask={setTask}
+  priority={priority}
+  setPriority={setPriority}
+  category={category}
+  recurrence={recurrence}
+  setRecurrence={setRecurrence}
+  dueDate={dueDate}
+  setDueDate={setDueDate}
+  addTask={addTask}
+/>
 
       <TaskList
         tasks={tasks}

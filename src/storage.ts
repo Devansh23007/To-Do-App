@@ -1,6 +1,8 @@
 import { load } from "@tauri-apps/plugin-store";
 import type { Recurrence, Task } from "./types";
 
+const NOTIFIED_REMINDERS_KEY = "notifiedReminders";
+
 const getStore = async () => {
   return await load("tasks.json");
 };
@@ -53,4 +55,17 @@ export const loadDarkMode = async (): Promise<boolean> => {
 
     return false;
   }
+};
+
+export const loadNotifiedReminders = async (): Promise<string[]> => {
+  const store = await getStore();
+  return (await store.get<string[]>(NOTIFIED_REMINDERS_KEY)) ?? [];
+};
+
+export const saveNotifiedReminders = async (
+  reminders: string[]
+): Promise<void> => {
+  const store = await getStore();
+  await store.set(NOTIFIED_REMINDERS_KEY, reminders);
+  await store.save();
 };

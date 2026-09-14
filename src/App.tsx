@@ -10,8 +10,9 @@ import type {
   Recurrence,
   Task,
 } from "./types";
-import { loadTasks, saveTasks, loadDarkMode, saveDarkMode } from "./storage";
+import { loadTasks, saveTasks, loadDarkMode, saveDarkMode , loadNotifiedReminders, saveNotifiedReminders,} from "./storage";
 import {
+  getToday,
   isToday,
   isUpcoming,
   isOverdue,
@@ -100,36 +101,78 @@ useEffect(() => {
       now.getMinutes()
     ).padStart(2, "0")}`;
 
-    for (const task of tasks) {
-      if (
-        task.completed ||
-        !task.reminder ||
-        task.reminder !== currentTime
-      ) {
-        continue;
-      }
+    const today = getToday();
 
-      const reminderId = `${task.createdAt}-${task.reminder}`;
+    const tomorrow = new Date();
+tomorrow.setDate(tomorrow.getDate() + 1);
 
-      if (notifiedReminders.has(reminderId)) {
-        continue;
-      }
+const tomorrowDate = `${tomorrow.getFullYear()}-${String(
+  tomorrow.getMonth() + 1
+).padStart(2, "0")}-${String(tomorrow.getDate()).padStart(2, "0")}`;
 
-      const permissionGranted = await requestNotificationPermission();
+for (const task of tasks) {
+  if (task.completed) {
+    continue;
+  }
 
-      if (!permissionGranted) continue;
+  let notificationType: string | null = null;
 
-      sendNotification({
-        title: "Task Reminder",
-        body: task.text,
-      });
+  // Explicit reminder
+  if (task.reminder && task.reminder === currentTime) {
+    notificationType = "explicit";
+  }
 
-      setNotifiedReminders((current) => {
-        const updated = new Set(current);
-        updated.add(reminderId);
-        return updated;
-      });
+  // Automatic due-date notifications
+  if (!task.reminder && task.dueDate && now.getHours() >= 9) {
+    if (task.dueDate === tomorrowDate) {
+      notificationType = "due-tomorrow";
+    } else if (task.dueDate === today) {
+      notificationType = "due-date";
+    } else if (task.dueDate < today) {
+      notificationType = "overdue";
     }
+  }
+
+  if (!notificationType) {
+    continue;
+  }
+
+  const reminderId = `${task.createdAt}-${task.dueDate ?? "none"}-${task.reminder ?? "none"}-${notificationType}`;
+
+  if (notifiedReminders.has(reminderId)) {
+    continue;
+  }
+
+  const permissionGranted = await requestNotificationPermission();
+
+  if (!permissionGranted) {
+    continue;
+  }
+
+  let title = "Task Reminder";
+
+  if (notificationType === "due-tomorrow") {
+    title = "Task Due Tomorrow";
+  } else if (notificationType === "due-date") {
+    title = "Task Due Today";
+  } else if (notificationType === "overdue") {
+    title = "Task Overdue";
+  }
+
+  sendNotification({
+    title,
+    body: task.text,
+  });
+
+  setNotifiedReminders((current) => {
+    const updated = new Set(current);
+    updated.add(reminderId);
+
+    saveNotifiedReminders(Array.from(updated));
+
+    return updated;
+  });
+}
   };
 
   checkReminders();
@@ -138,6 +181,15 @@ useEffect(() => {
 
   return () => clearInterval(interval);
 }, [tasks, notifiedReminders]);
+
+useEffect(() => {
+  const loadReminderHistory = async () => {
+    const reminders = await loadNotifiedReminders();
+    setNotifiedReminders(new Set(reminders));
+  };
+
+  loadReminderHistory();
+}, []);
 
 const addTask = () => {
   if (task.trim() === "") {

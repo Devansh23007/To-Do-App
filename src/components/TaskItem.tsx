@@ -9,6 +9,7 @@ import type {
 type TaskItemProps = {
   task: Task;
   toggleTask: (createdAt: number) => void;
+  togglePin: (createdAt: number) => void;
   deleteTask: (createdAt: number) => void;
   editTask: (
   createdAt: number,
@@ -23,6 +24,7 @@ type TaskItemProps = {
 function TaskItem({
   task,
   toggleTask,
+  togglePin,
   deleteTask,
   editTask,
 }: TaskItemProps) {
@@ -172,6 +174,14 @@ if (isEditing) {
         <button onClick={() => deleteTask(task.createdAt)}>
           Delete
         </button>
+
+        <button
+  type="button"
+  onClick={() => togglePin(task.createdAt)}
+  title={task.pinned ? "Unpin task" : "Pin task"}
+>
+  {task.pinned ? "★" : "☆"}
+</button>
       </div>
     </div>
   </li>

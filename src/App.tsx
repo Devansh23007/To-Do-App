@@ -204,6 +204,7 @@ const newTask: Task = {
   dueDate: dueDate || null,
   recurrence,
   reminder: reminder || null,
+  pinned: false,
   createdAt: Date.now(),
 };
 
@@ -321,6 +322,16 @@ const nextOccurrenceExists = currentTasks.some(
   });
 };
 
+const togglePin = (createdAt: number) => {
+  setTasks((currentTasks) =>
+    currentTasks.map((task) =>
+      task.createdAt === createdAt
+        ? { ...task, pinned: !task.pinned }
+        : task
+    )
+  );
+};
+
 const deleteTask = (createdAt: number) => {
   setTasks((currentTasks) =>
     currentTasks.filter((task) => task.createdAt !== createdAt)
@@ -365,37 +376,41 @@ const filteredTasks = viewTasks
     );
   })
   .sort((a, b) => {
-    if (sortOption === "newest") {
-  return b.createdAt - a.createdAt;
-}
+  if (a.pinned !== b.pinned) {
+    return a.pinned ? -1 : 1;
+  }
 
-if (sortOption === "oldest") {
-  return a.createdAt - b.createdAt;
-}
+  if (sortOption === "newest") {
+    return b.createdAt - a.createdAt;
+  }
 
-    if (sortOption === "priority") {
-      const priorityValue = {
-        high: 1,
-        medium: 2,
-        low: 3,
-      };
+  if (sortOption === "oldest") {
+    return a.createdAt - b.createdAt;
+  }
 
-      return (
-        priorityValue[a.priority] -
-        priorityValue[b.priority]
-      );
-    }
+  if (sortOption === "priority") {
+    const priorityValue = {
+      high: 1,
+      medium: 2,
+      low: 3,
+    };
 
-    if (sortOption === "dueDate") {
-      if (!a.dueDate && !b.dueDate) return 0;
-      if (!a.dueDate) return 1;
-      if (!b.dueDate) return -1;
+    return (
+      priorityValue[a.priority] -
+      priorityValue[b.priority]
+    );
+  }
 
-      return a.dueDate.localeCompare(b.dueDate);
-    }
+  if (sortOption === "dueDate") {
+    if (!a.dueDate && !b.dueDate) return 0;
+    if (!a.dueDate) return 1;
+    if (!b.dueDate) return -1;
 
-    return 0;
-  });
+    return a.dueDate.localeCompare(b.dueDate);
+  }
+
+  return 0;
+});
 
 const completedCount = tasks.filter(
   (task) => task.completed
@@ -454,6 +469,7 @@ const newTask: Task = {
   dueDate: dueDate || null,
   recurrence,
   reminder: reminder || null,
+  pinned: false,
   createdAt: Date.now(),
 };
 
@@ -630,12 +646,13 @@ return (
   </select>
 </div>
 
-<TaskList 
-  tasks={filteredTasks} 
-  toggleTask={toggleTask} 
-  deleteTask={deleteTask} 
-  editTask={editTask} 
-/> 
+<TaskList
+  tasks={filteredTasks}
+  toggleTask={toggleTask}
+  togglePin={togglePin}
+  deleteTask={deleteTask}
+  editTask={editTask}
+/>
     </>
     ) : activeModule ? (
   <ModulePage

@@ -20,16 +20,16 @@ export const saveTasks = async (tasks: Task[]) => {
 
 export const loadTasks = async (): Promise<Task[]> => {
   const store = await getStore();
-
   const tasks = await store.get<Task[]>("tasks");
 
   return (
-  tasks?.map((task) => ({
-    ...task,
-    recurrence: task.recurrence ?? ("none" as Recurrence),
-    reminder: task.reminder ?? null,
-  })) ?? []
-);
+    tasks?.map((task) => ({
+      ...task,
+      recurrence: task.recurrence ?? ("none" as Recurrence),
+      reminder: task.reminder ?? null,
+      pinned: task.pinned ?? false,
+    })) ?? []
+  );
 };
 
 export const saveDarkMode = async (darkMode: boolean) => {

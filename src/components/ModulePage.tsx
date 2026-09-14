@@ -102,6 +102,7 @@ function ModulePage({
       <TaskList
         tasks={tasks}
         toggleTask={toggleTask}
+        togglePin={togglePin}
         deleteTask={deleteTask}
         editTask={editTask}
       />

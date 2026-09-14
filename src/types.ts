@@ -22,5 +22,6 @@ export type Task = {
   dueDate: string | null;
   recurrence: Recurrence;
   reminder: string | null;
+  pinned: boolean;
   createdAt: number;
 };

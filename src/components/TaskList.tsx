@@ -10,6 +10,7 @@ import type {
 type TaskListProps = {
   tasks: Task[];
   toggleTask: (createdAt: number) => void;
+  togglePin: (createdAt: number) => void;
   deleteTask: (createdAt: number) => void;
 editTask: (
   createdAt: number,
@@ -24,6 +25,7 @@ editTask: (
 function TaskList({
   tasks,
   toggleTask,
+  togglePin,
   deleteTask,
   editTask,
 }: TaskListProps) {
@@ -41,6 +43,7 @@ function TaskList({
     key={task.createdAt}
     task={task}
     toggleTask={toggleTask}
+    togglePin={togglePin}
     deleteTask={deleteTask}
     editTask={editTask}
   />

@@ -28,6 +28,7 @@ export const loadTasks = async (): Promise<Task[]> => {
       recurrence: task.recurrence ?? ("none" as Recurrence),
       reminder: task.reminder ?? null,
       pinned: task.pinned ?? false,
+      tags: task.tags ?? [],
     })) ?? []
   );
 };

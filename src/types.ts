@@ -23,5 +23,6 @@ export type Task = {
   recurrence: Recurrence;
   reminder: string | null;
   pinned: boolean;
+  tags: string[];
   createdAt: number;
 };

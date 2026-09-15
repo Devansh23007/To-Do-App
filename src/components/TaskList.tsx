@@ -18,7 +18,8 @@ editTask: (
   newPriority: Priority,
   newCategory: Category,
   newDueDate: string | null,
-  newRecurrence: Recurrence
+  newRecurrence: Recurrence,
+  newTags: string[]
 ) => void;
 };
 

@@ -37,6 +37,7 @@ function App() {
   const [recurrence, setRecurrence] =
   useState<Recurrence>("none");
   const [reminder, setReminder] = useState<string>("");
+  const [tags, setTags] = useState("");
   const [notifiedReminders, setNotifiedReminders] = useState<Set<string>>(
   new Set()
 );
@@ -205,6 +206,10 @@ const newTask: Task = {
   recurrence,
   reminder: reminder || null,
   pinned: false,
+  tags: tags
+    .split(",")
+    .map((tag) => tag.trim())
+    .filter((tag) => tag !== ""),
   createdAt: Date.now(),
 };
 
@@ -218,6 +223,7 @@ const newTask: Task = {
   setPriority("medium");
   setRecurrence("none");  
   setReminder("");
+  setTags("");  
 };
 
 const editTask = (
@@ -226,7 +232,8 @@ const editTask = (
   newPriority: Priority,
   newCategory: Category,
   newDueDate: string | null,
-  newRecurrence: Recurrence
+  newRecurrence: Recurrence,
+  newTags: string[]
 ) => {
   setTasks((currentTasks) =>
     currentTasks.map((task) =>
@@ -238,6 +245,7 @@ const editTask = (
             category: newCategory,
             dueDate: newDueDate,
             recurrence: newRecurrence,
+            tags: newTags,
           }
         : task
     )
@@ -470,6 +478,10 @@ const newTask: Task = {
   recurrence,
   reminder: reminder || null,
   pinned: false,
+  tags: tags
+  .split(",")
+  .map((tag) => tag.trim())
+  .filter((tag) => tag !== ""),
   createdAt: Date.now(),
 };
 
@@ -480,6 +492,7 @@ const newTask: Task = {
 
   setTask("");
   setDueDate("");
+  setTags("");
 };
 
 const openModule = (category: Category) => {
@@ -527,6 +540,8 @@ return (
   setRecurrence={setRecurrence}
   reminder={reminder}
   setReminder={setReminder}
+  tags={tags}
+  setTags={setTags}
   dueDate={dueDate}
   setDueDate={setDueDate}
   addTask={addTask}
@@ -655,27 +670,30 @@ return (
 />
     </>
     ) : activeModule ? (
-  <ModulePage
-    category={activeModule}
-    tasks={tasks.filter(
-      (task) => task.category === activeModule
-    )}
-    task={task}
-    setTask={setTask}
-    priority={priority}
-    setPriority={setPriority}
-    recurrence={recurrence}
-    setRecurrence={setRecurrence}
-    reminder={reminder}
-    setReminder={setReminder}
-    dueDate={dueDate}
-    setDueDate={setDueDate}
-    addTask={addModuleTask}
-    toggleTask={toggleTask}
-    deleteTask={deleteTask}
-    editTask={editTask}
-    onBack={closeModule}
-  />
+<ModulePage
+  category={activeModule}
+  tasks={tasks.filter(
+    (task) => task.category === activeModule
+  )}
+  task={task}
+  setTask={setTask}
+  priority={priority}
+  setPriority={setPriority}
+  recurrence={recurrence}
+  setRecurrence={setRecurrence}
+  reminder={reminder}
+  setReminder={setReminder}
+  tags={tags}
+  setTags={setTags}
+  dueDate={dueDate}
+  setDueDate={setDueDate}
+  addTask={addModuleTask}
+  toggleTask={toggleTask}
+  togglePin={togglePin}
+  deleteTask={deleteTask}
+  editTask={editTask}
+  onBack={closeModule}
+/>
 ) : (
   <div className="module-page">
     <div className="page-header">

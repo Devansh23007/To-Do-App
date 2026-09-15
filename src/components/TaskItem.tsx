@@ -17,7 +17,8 @@ type TaskItemProps = {
   newPriority: Priority,
   newCategory: Category,
   newDueDate: string | null,
-  newRecurrence: Recurrence
+  newRecurrence: Recurrence,
+  newTags: string[]
   ) => void;
 };
 
@@ -34,6 +35,7 @@ function TaskItem({
   const [editCategory, setEditCategory] = useState<Category>(task.category);
   const [editDueDate, setEditDueDate] = useState(task.dueDate ?? "");
   const [editRecurrence, setEditRecurrence] = useState<Recurrence>(task.recurrence);
+  const [editTags, setEditTags] = useState(task.tags.join(", "));
 
   const handleSave = () => {
     const trimmedText = editText.trim();
@@ -49,7 +51,11 @@ editTask(
   editPriority,
   editCategory,
   editDueDate || null,
-  editRecurrence
+  editRecurrence,
+  editTags
+    .split(",")
+    .map((tag) => tag.trim())
+    .filter((tag) => tag !== "")
 );
   setIsEditing(false);
 };
@@ -60,6 +66,7 @@ const handleCancel = () => {
   setEditCategory(task.category);
   setEditDueDate(task.dueDate ?? "");
   setEditRecurrence(task.recurrence);
+  setEditTags(task.tags.join(", "));
   setIsEditing(false);
 };
 
@@ -130,6 +137,13 @@ if (isEditing) {
           <option value="monthly">Monthly</option>
         </select>
 
+        <input
+  type="text"
+  placeholder="Tags (comma separated)"
+  value={editTags}
+  onChange={(event) => setEditTags(event.target.value)}
+/>
+
         <div className="edit-task-actions">
           <button onClick={handleSave}>Save</button>
           <button onClick={handleCancel}>Cancel</button>
@@ -184,6 +198,16 @@ if (isEditing) {
 </button>
       </div>
     </div>
+
+    {task.tags.length > 0 && (
+  <div className="task-tags">
+    {task.tags.map((tag) => (
+      <span key={tag} className="task-tag">
+        {tag}
+      </span>
+    ))}
+  </div>
+)}
   </li>
 );
 }

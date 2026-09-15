@@ -24,6 +24,9 @@ type AddTaskProps = {
 
   reminder: string;
   setReminder: (value: string) => void;
+
+  tags: string;
+  setTags: (tags: string) => void;
 };
 
 function AddTask({
@@ -36,6 +39,8 @@ function AddTask({
   setRecurrence,
   dueDate,
   setDueDate,
+  tags,
+  setTags,
   addTask,
   reminder,
   setReminder,
@@ -91,6 +96,13 @@ function AddTask({
   type="time"
   value={reminder}
   onChange={(event) => setReminder(event.target.value)}
+/>
+
+<input
+  type="text"
+  placeholder="Tags (comma separated)"
+  value={tags}
+  onChange={(event) => setTags(event.target.value)}
 />
 
       <button onClick={addTask}>

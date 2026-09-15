@@ -23,12 +23,16 @@ type ModulePageProps = {
   reminder: string;
   setReminder: (value: string) => void;
 
+  tags: string;
+  setTags: (tags: string) => void;
+
   dueDate: string;
   setDueDate: (dueDate: string) => void;
 
   addTask: () => void;
 
   toggleTask: (createdAt: number) => void;
+  togglePin: (createdAt: number) => void;
   deleteTask: (createdAt: number) => void;
 
 editTask: (
@@ -63,10 +67,13 @@ function ModulePage({
   setRecurrence,
   reminder,
   setReminder,
+  tags,
+  setTags,
   dueDate,
   setDueDate,
   addTask,
   toggleTask,
+  togglePin,
   deleteTask,
   editTask,
   onBack,
@@ -84,6 +91,7 @@ function ModulePage({
         <p>Tasks in your {moduleName.toLowerCase()} module.</p>
       </div>
 
+
 <AddTask
   task={task}
   setTask={setTask}
@@ -94,6 +102,8 @@ function ModulePage({
   setRecurrence={setRecurrence}
   reminder={reminder}
   setReminder={setReminder}
+  tags={tags}
+  setTags={setTags}
   dueDate={dueDate}
   setDueDate={setDueDate}
   addTask={addTask}
